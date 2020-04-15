@@ -86,20 +86,23 @@ setColor() {
   printf "\e[%sm" "${1}"
 }
 
-# MARK FOR REMOVAL, REPLACE WITH DEF IN functions.sh
-animatedPrint() {
-  local _charsToAnimate _speed
-  _charsToAnimate=$(printf "%s" "${1}" | sed -E "s/ /_/g;")
+animatedPrint()
+{
+  local _charsToAnimate _speed _currentChar
+  # For some reason spacd get mangled using ${VAR:POS:LIMIT}. so replace spaces with _ here,
+  # then add spaces back when needed.
+  _charsToAnimate=$( printf "%s" "${1}" | sed -E "s/ /_/g;")
   _speed="${2}"
-  for ((i = 0; i < ${#_charsToAnimate}; i++)); do
-    printf "%s" ${_charsToAnimate:$i:1}
-    sleep $_speed
+  for (( i=0; i< ${#_charsToAnimate}; i++ )); do
+      # Replace placeholder _ with space | i.e., fix spaces that were replaced
+      _currentChar=$(printf "%s" "${_charsToAnimate:$i:1}" | sed -E "s/_/ /g;")
+      printf "%s" "${_currentChar}"
+      sleep $_speed
   done
 }
 
-# MARK FOR REMOVAL, REPLACE WITH DEF IN functions.sh
 showLoadingBar() {
-  local _slb_inc _slb_windowWidth _slb_numChars _slb_adjustedNumChars _slb_loadingBarLimit
+    local _slb_inc _slb_windowWidth _slb_numChars _slb_adjustedNumChars _slb_loadingBarLimit
   printf "\n"
   animatedPrint "${1}" .05
   setColor 43
@@ -119,6 +122,7 @@ showLoadingBar() {
     clear
   fi
 }
+
 
 notifyUser() {
   [[ "${2}" == "showInfo" ]] && showInfoPanel
