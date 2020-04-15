@@ -1,27 +1,44 @@
 #!/bin/bash
 
-### Functions ###
-
+set -o posix
 
 setColor() {
   printf "\e[%sm" "${1}"
 }
 
-animatedPrint()
-{
+initColors() {
+  WARNINGCOLOR=$(setTextColor 35)
+  CLEARCOLOR=$(setTextColor 0)
+  NOTIFYCOLOR=$(setTextColor 33)
+  DSHCOLOR=$(setTextColor 41)
+  USRPRMPTCOLOR=$(setTextColor 41)
+  HIGHLIGHTCOLOR=$(setTextColor 41)
+  HIGHLIGHTCOLOR2=$(setTextColor 45)
+  ATTENTIONEFFECT=$(setTextColor 5)
+  ATTENTIONEFFECTCOLOR=$(setTextColor 36)
+  DARKTEXTCOLOR=$(setTextColor 30)
+}
+
+testFunc() {
+  printf "\n\nLoaded Functions.sh"
+  sleep 2
+}
+
+### Functions ###
+
+animatedPrint() {
   local _charsToAnimate _speed _currentChar
   # For some reason spacd get mangled using ${VAR:POS:LIMIT}. so replace spaces with _ here,
   # then add spaces back when needed.
-  _charsToAnimate=$( printf "%s" "${1}" | sed -E "s/ /_/g;")
+  _charsToAnimate=$(printf "%s" "${1}" | sed -E "s/ /_/g;")
   _speed="${2}"
-  for (( i=0; i< ${#_charsToAnimate}; i++ )); do
-      # Replace placeholder _ with space | i.e., fix spaces that were replaced
-      _currentChar=$(printf "%s" "${_charsToAnimate:$i:1}" | sed -E "s/_/ /g;")
-      printf "%s" "${_currentChar}"
-      sleep $_speed
+  for ((i = 0; i < ${#_charsToAnimate}; i++)); do
+    # Replace placeholder _ with space | i.e., fix spaces that were replaced
+    _currentChar=$(printf "%s" "${_charsToAnimate:$i:1}" | sed -E "s/_/ /g;")
+    printf "%s" "${_currentChar}"
+    sleep $_speed
   done
 }
-
 
 # @todo May be error, though this is working, currently referenceing $2, thinking it should be $1...test later
 setTextColor() {
@@ -44,24 +61,10 @@ sleepWriteWordSleep() {
   sleep "${2}"
 }
 
-
-initColors() {
-  WARNINGCOLOR=$(setTextColor 35)
-  CLEARCOLOR=$(setTextColor 0)
-  NOTIFYCOLOR=$(setTextColor 33)
-  DSHCOLOR=$(setTextColor 41)
-  USRPRMPTCOLOR=$(setTextColor 41)
-  HIGHLIGHTCOLOR=$(setTextColor 41)
-  HIGHLIGHTCOLOR2=$(setTextColor 45)
-  ATTENTIONEFFECT=$(setTextColor 5)
-  ATTENTIONEFFECTCOLOR=$(setTextColor 36)
-  DARKTEXTCOLOR=$(setTextColor 30)
-}
-
 #
 
 showLoadingBar() {
-    local _slb_inc _slb_windowWidth _slb_numChars _slb_adjustedNumChars _slb_loadingBarLimit
+  local _slb_inc _slb_windowWidth _slb_numChars _slb_adjustedNumChars _slb_loadingBarLimit
   printf "\n"
   animatedPrint "${1}" .05
   setColor 43
@@ -81,4 +84,3 @@ showLoadingBar() {
     clear
   fi
 }
-

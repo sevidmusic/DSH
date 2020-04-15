@@ -1,7 +1,8 @@
 #!/bin/bash
 
 set -o posix
-
+source ./functions.sh
+testFunc
 # OPTIONS=("Foo" "Bar" "Baz");
 # RESPONSES=('Bar-Bazzer-Foo' 'Foo-Bazzer-Bar' 'Bazzer-Bar-Foo');
 # askUserForSelection $OPTIONS $RESPONSES;
@@ -30,7 +31,8 @@ askUserForSelection() {
   done
 }
 
-initVars() {
+# MARK FOR REMOVAL, REPLACE WITH DEF IN functions.sh
+initColors() {
   WARNINGCOLOR=$(setColor 35)
   CLEARCOLOR=$(setColor 0)
   NOTIFYCOLOR=$(setColor 33)
@@ -44,8 +46,8 @@ initVars() {
 }
 
 showInfoPanel() {
-    local _sip_userDefinedComponentSubType
-    _sip_userDefinedComponentSubType=$(printf "%s" "${USER_DEFINED_COMPONENT_SUBTYPE}" | sed "s,DS_NAMESPACE_SEPERATOR,\\\,g")
+  local _sip_userDefinedComponentSubType
+  _sip_userDefinedComponentSubType=$(printf "%s" "${USER_DEFINED_COMPONENT_SUBTYPE}" | sed "s,DS_NAMESPACE_SEPERATOR,\\\,g")
   printf "\n\n%s----- Info Panel -----%s" "${CLEARCOLOR}${HIGHLIGHTCOLOR2}${DARKTEXTCOLOR}${DARKTEXTCOLOR}" "${CLEARCOLOR}"
   printf "\n  %sExtending: %s" "${CLEARCOLOR}${NOTIFYCOLOR}" "${CLEARCOLOR}${HIGHLIGHTCOLOR2}${DARKTEXTCOLOR}${EXTENDING}${CLEARCOLOR}"
   printf "\n  %sExtension Name: %s" "${CLEARCOLOR}${NOTIFYCOLOR}" "${CLEARCOLOR}${HIGHLIGHTCOLOR2}${DARKTEXTCOLOR}${EXTENSION_NAME}${CLEARCOLOR}"
@@ -64,8 +66,8 @@ askUserIfComponentForCoreOrExtension() {
   EXTENDING="${PREVIOUS_USER_INPUT}"
 }
 
-setDirecotryPaths () {
-    if [[ "${EXTENDING}" == "Core" ]]; then
+setDirecotryPaths() {
+  if [[ "${EXTENDING}" == "Core" ]]; then
     EXTENSION_NAME=""
     COMPONENT_TEST_TRAIT_TARGET_ROOT_DIR="./Tests/Unit/interfaces/component"
     COMPONENT_ABSTRACT_TEST_TARGET_ROOT_DIR="./Tests/Unit/abstractions/component"
@@ -84,25 +86,25 @@ setDirecotryPaths () {
     COMPONENT_CLASS_TARGET_ROOT_DIR="./Extensions/${EXTENSION_NAME}/core/classes/component"
   fi
 }
-
+# MARK FOR REMOVAL, REPLACE WITH DEF IN functions.sh
 setColor() {
   printf "\e[%sm" "${1}"
 }
 
-
-animatedPrint()
-{
+# MARK FOR REMOVAL, REPLACE WITH DEF IN functions.sh
+animatedPrint() {
   local _charsToAnimate _speed
-  _charsToAnimate=$( printf "%s" "${1}" | sed -E "s/ /_/g;")
+  _charsToAnimate=$(printf "%s" "${1}" | sed -E "s/ /_/g;")
   _speed="${2}"
-  for (( i=0; i< ${#_charsToAnimate}; i++ )); do
-      printf "%s" ${_charsToAnimate:$i:1}
-      sleep $_speed
+  for ((i = 0; i < ${#_charsToAnimate}; i++)); do
+    printf "%s" ${_charsToAnimate:$i:1}
+    sleep $_speed
   done
 }
 
+# MARK FOR REMOVAL, REPLACE WITH DEF IN functions.sh
 showLoadingBar() {
-    local _slb_inc _slb_windowWidth _slb_numChars _slb_adjustedNumChars _slb_loadingBarLimit
+  local _slb_inc _slb_windowWidth _slb_numChars _slb_adjustedNumChars _slb_loadingBarLimit
   printf "\n"
   animatedPrint "${1}" .05
   setColor 43
@@ -204,17 +206,17 @@ askUserForComponentSubtype() {
 }
 
 showWelcomeMessage() {
-    printf "%s" "${CLEARCOLOR}${NOTIFYCOLOR}"
-    animatedPrint "Welcome to the Darling Shell" .05
-    printf "%s" "${CLEARCOLOR}"
-    showLoadingBar "One moment plaes"
+  printf "%s" "${CLEARCOLOR}${NOTIFYCOLOR}"
+  animatedPrint "Welcome to the Darling Shell" .05
+  printf "%s" "${CLEARCOLOR}"
+  showLoadingBar "One moment plaes"
 }
 
 askUserForTemplateDirectoryName() {
   local _auftdn_options
   local _auftdn_responses
   _auftdn_options=("CoreComponent" "CoreSwitchableComponent" "CoreOutputComponent" "CoreActionComponent")
-  _auftdn_responses=("${CLEARCOLOR}${NOTIFYCOLOR}You selected the ${CLEARCOLOR}${HIGHLIGHTCOLOR}${DARKTEXTCOLOR}CoreComponent${CLEARCOLOR}${NOTIFYCOLOR} template, if this is correct enter \"${CLEARCOLOR}${HIGHLIGHTCOLOR}${DARKTEXTCOLOR}Y${CLEARCOLOR}${NOTIFYCOLOR}\" and press \"${CLEARCOLOR}${HIGHLIGHTCOLOR}${DARKTEXTCOLOR}<enter>${CLEARCOLOR}${NOTIFYCOLOR}\", otherwise press \"${CLEARCOLOR}${HIGHLIGHTCOLOR}${DARKTEXTCOLOR}<ctrl> c${CLEARCOLOR}${NOTIFYCOLOR}\" to quit and start over.${CLEARCOLOR}" "${CLEARCOLOR}${NOTIFYCOLOR}You selected the ${CLEARCOLOR}${HIGHLIGHTCOLOR}${DARKTEXTCOLOR}CoreSwitchableComponent${CLEARCOLOR}${NOTIFYCOLOR} template, if this is correct enter \"${CLEARCOLOR}${HIGHLIGHTCOLOR}${DARKTEXTCOLOR}Y${CLEARCOLOR}${NOTIFYCOLOR}\" and press \"${CLEARCOLOR}${HIGHLIGHTCOLOR}${DARKTEXTCOLOR}<enter>${CLEARCOLOR}${NOTIFYCOLOR}\", otherwise press \"${CLEARCOLOR}${HIGHLIGHTCOLOR}${DARKTEXTCOLOR}<ctrl> c${CLEARCOLOR}${NOTIFYCOLOR}\" to quit and start over.${CLEARCOLOR}" "${CLEARCOLOR}${NOTIFYCOLOR}You selected the \"${CLEARCOLOR}${HIGHLIGHTCOLOR}${DARKTEXTCOLOR}CoreOutputComponent${CLEARCOLOR}${NOTIFYCOLOR}\" template, if this is correct enter \"${CLEARCOLOR}${HIGHLIGHTCOLOR}${DARKTEXTCOLOR}Y${CLEARCOLOR}${NOTIFYCOLOR}\" and press \"${CLEARCOLOR}${HIGHLIGHTCOLOR}${DARKTEXTCOLOR}<enter>${CLEARCOLOR}${NOTIFYCOLOR}\", otherwise press \"${CLEARCOLOR}${HIGHLIGHTCOLOR}${DARKTEXTCOLOR}<ctrl> c${CLEARCOLOR}${NOTIFYCOLOR}\" to quit and start over.${CLEARCOLOR}"  "${CLEARCOLOR}${NOTIFYCOLOR}You selected the \"${CLEARCOLOR}${HIGHLIGHTCOLOR}${DARKTEXTCOLOR}CoreActionComponent${CLEARCOLOR}${NOTIFYCOLOR}\" template, if this is correct enter \"${CLEARCOLOR}${HIGHLIGHTCOLOR}${DARKTEXTCOLOR}Y${CLEARCOLOR}${NOTIFYCOLOR}\" and press \"${CLEARCOLOR}${HIGHLIGHTCOLOR}${DARKTEXTCOLOR}<enter>${CLEARCOLOR}${NOTIFYCOLOR}\", otherwise press \"${CLEARCOLOR}${HIGHLIGHTCOLOR}${DARKTEXTCOLOR}<ctrl> c${CLEARCOLOR}${NOTIFYCOLOR}\" to quit and start over.${CLEARCOLOR}")
+  _auftdn_responses=("${CLEARCOLOR}${NOTIFYCOLOR}You selected the ${CLEARCOLOR}${HIGHLIGHTCOLOR}${DARKTEXTCOLOR}CoreComponent${CLEARCOLOR}${NOTIFYCOLOR} template, if this is correct enter \"${CLEARCOLOR}${HIGHLIGHTCOLOR}${DARKTEXTCOLOR}Y${CLEARCOLOR}${NOTIFYCOLOR}\" and press \"${CLEARCOLOR}${HIGHLIGHTCOLOR}${DARKTEXTCOLOR}<enter>${CLEARCOLOR}${NOTIFYCOLOR}\", otherwise press \"${CLEARCOLOR}${HIGHLIGHTCOLOR}${DARKTEXTCOLOR}<ctrl> c${CLEARCOLOR}${NOTIFYCOLOR}\" to quit and start over.${CLEARCOLOR}" "${CLEARCOLOR}${NOTIFYCOLOR}You selected the ${CLEARCOLOR}${HIGHLIGHTCOLOR}${DARKTEXTCOLOR}CoreSwitchableComponent${CLEARCOLOR}${NOTIFYCOLOR} template, if this is correct enter \"${CLEARCOLOR}${HIGHLIGHTCOLOR}${DARKTEXTCOLOR}Y${CLEARCOLOR}${NOTIFYCOLOR}\" and press \"${CLEARCOLOR}${HIGHLIGHTCOLOR}${DARKTEXTCOLOR}<enter>${CLEARCOLOR}${NOTIFYCOLOR}\", otherwise press \"${CLEARCOLOR}${HIGHLIGHTCOLOR}${DARKTEXTCOLOR}<ctrl> c${CLEARCOLOR}${NOTIFYCOLOR}\" to quit and start over.${CLEARCOLOR}" "${CLEARCOLOR}${NOTIFYCOLOR}You selected the \"${CLEARCOLOR}${HIGHLIGHTCOLOR}${DARKTEXTCOLOR}CoreOutputComponent${CLEARCOLOR}${NOTIFYCOLOR}\" template, if this is correct enter \"${CLEARCOLOR}${HIGHLIGHTCOLOR}${DARKTEXTCOLOR}Y${CLEARCOLOR}${NOTIFYCOLOR}\" and press \"${CLEARCOLOR}${HIGHLIGHTCOLOR}${DARKTEXTCOLOR}<enter>${CLEARCOLOR}${NOTIFYCOLOR}\", otherwise press \"${CLEARCOLOR}${HIGHLIGHTCOLOR}${DARKTEXTCOLOR}<ctrl> c${CLEARCOLOR}${NOTIFYCOLOR}\" to quit and start over.${CLEARCOLOR}" "${CLEARCOLOR}${NOTIFYCOLOR}You selected the \"${CLEARCOLOR}${HIGHLIGHTCOLOR}${DARKTEXTCOLOR}CoreActionComponent${CLEARCOLOR}${NOTIFYCOLOR}\" template, if this is correct enter \"${CLEARCOLOR}${HIGHLIGHTCOLOR}${DARKTEXTCOLOR}Y${CLEARCOLOR}${NOTIFYCOLOR}\" and press \"${CLEARCOLOR}${HIGHLIGHTCOLOR}${DARKTEXTCOLOR}<enter>${CLEARCOLOR}${NOTIFYCOLOR}\", otherwise press \"${CLEARCOLOR}${HIGHLIGHTCOLOR}${DARKTEXTCOLOR}<ctrl> c${CLEARCOLOR}${NOTIFYCOLOR}\" to quit and start over.${CLEARCOLOR}")
   askUserForSelection "${CLEARCOLOR}${NOTIFYCOLOR}Please select the template that should be used to generate the php files.${CLEARCOLOR}" _auftdn_options _auftdn_responses
   TEMPLATE="${PREVIOUS_USER_INPUT}"
 }
@@ -229,45 +231,45 @@ setTemplatePaths() {
 }
 
 askUserForExtensionName() {
-    promptUserAndVerifyInput "${CLEARCOLOR}${NOTIFYCOLOR}What is the ${CLEARCOLOR}${HIGHLIGHTCOLOR}${DARKTEXTCOLOR}name of the Extension${CLEARCOLOR}${NOTIFYCOLOR} this Component will belong to?${CLEARCOLOR}" "showInfo"
-    EXTENSION_NAME="${PREVIOUS_USER_INPUT}"
+  promptUserAndVerifyInput "${CLEARCOLOR}${NOTIFYCOLOR}What is the ${CLEARCOLOR}${HIGHLIGHTCOLOR}${DARKTEXTCOLOR}name of the Extension${CLEARCOLOR}${NOTIFYCOLOR} this Component will belong to?${CLEARCOLOR}" "showInfo"
+  EXTENSION_NAME="${PREVIOUS_USER_INPUT}"
 }
 
 [[ $FORCE_MAKE -ne 1 ]] && clear
 
-initVars
-while getopts "hx:t:e:c:s:f" OPTION
-do
-    case "${OPTION}" in
-        h)
-            printf "\n%s\n\n%s\n\n%s\n\n%s\n\n%s\n\n%s\n\n%s\n\n%s\n\n%s\n\n%s\n\n" "${CLEARCOLOR}${NOTIFYCOLOR}extendComponent.sh can be used to generate the PHP files required to define a new compoonent for the DDMS that extends a component defined in Core, or in an Extension." "If you call this script without any flags you will be guided through the process of creating a new component from within a user interface." "You can also specify flags if you already know any of the values you wish to use. You can also specify a few flags, and then finish from within the user interface." "The following flags are available:" "    -x <arg> The -x flag determines whether the new component extends a Core component, or a component defined in an Extension." "    -t" "    -e"  "    -c" "    -s" "    -f"
-            exit
-            ;;
-        x)
-            EXTENDING="${OPTARG}"
-            ;;
-        t)
-            TEMPLATE="${OPTARG}"
-            ;;
-        e)
-            EXTENSION_NAME="${OPTARG}"
-            ;;
-        c)
-            USER_DEFINED_COMPONENT_NAME="${OPTARG}"
-            ;;
-        s)
-            USER_DEFINED_COMPONENT_SUBTYPE=$(printf "%s" "${OPTARG}" | sed -E "s,[\],DS_NAMESPACE_SEPERATOR,g")
-            # To allow an empty string be passed to the -s , use var to determine if this flag is set instead of [[ -z "${USER_DEFINED_COMPONENT_SUBTYPE}" ]]
-            USER_SUBTYPE_SET_WITH_FLAG=1
-            ;;
-        f)
-            [[ "${EXTENDING}" != "Core" ]] && [[ -n "${EXTENDING}" ]] && [[ -n "${TEMPLATE}" ]] && [[ -n "${EXTENSION_NAME}" ]] &&  [[ -n "${USER_DEFINED_COMPONENT_NAME}" ]] &&  [[ $USER_SUBTYPE_SET_WITH_FLAG -eq 1  ]] && FORCE_MAKE=1 || USER_ERROR=1
-            [[ $USER_ERROR -eq 1 ]] && printf "\n%sWarning:%s You must set all flags (-x -e -t -c -s) to use the -f flag, the -f flag MUST be the LAST flag, and you cannot use the -f flag to extend Core!\n\n%s" "${CLEARCOLOR}${ATTENTIONEFFECTCOLOR}${ATTENTIONEFFECT}" "${CLEARCOLOR}${WARNINGCOLOR}" "${CLEARCOLOR}" && exit
-            ;;
-        *)
-            printf "\n%s%s%sWARNING:%s%s You must porvide a value for any flags you set, and you can't set invalid flags.\nThe following flags are possible:\n    -x <arg> (Set <arg> to \"Core\" if extending \"core\", set to \"Extension\" if extending an Extension)%s\n\n" "${CLEARCOLOR}" "${ATTENTIONEFFECTCOLOR}" "${ATTENTIONEFFECT}" "${CLEARCOLOR}" "${WARNINGCOLOR}" "${CLEARCOLOR}"
-            exit
-    esac
+initColors
+while getopts "hx:t:e:c:s:f" OPTION; do
+  case "${OPTION}" in
+  h)
+    printf "\n%s\n\n%s\n\n%s\n\n%s\n\n%s\n\n%s\n\n%s\n\n%s\n\n%s\n\n%s\n\n" "${CLEARCOLOR}${NOTIFYCOLOR}extendComponent.sh can be used to generate the PHP files required to define a new compoonent for the DDMS that extends a component defined in Core, or in an Extension." "If you call this script without any flags you will be guided through the process of creating a new component from within a user interface." "You can also specify flags if you already know any of the values you wish to use. You can also specify a few flags, and then finish from within the user interface." "The following flags are available:" "    -x <arg> The -x flag determines whether the new component extends a Core component, or a component defined in an Extension." "    -t" "    -e" "    -c" "    -s" "    -f"
+    exit
+    ;;
+  x)
+    EXTENDING="${OPTARG}"
+    ;;
+  t)
+    TEMPLATE="${OPTARG}"
+    ;;
+  e)
+    EXTENSION_NAME="${OPTARG}"
+    ;;
+  c)
+    USER_DEFINED_COMPONENT_NAME="${OPTARG}"
+    ;;
+  s)
+    USER_DEFINED_COMPONENT_SUBTYPE=$(printf "%s" "${OPTARG}" | sed -E "s,[\],DS_NAMESPACE_SEPERATOR,g")
+    # To allow an empty string be passed to the -s , use var to determine if this flag is set instead of [[ -z "${USER_DEFINED_COMPONENT_SUBTYPE}" ]]
+    USER_SUBTYPE_SET_WITH_FLAG=1
+    ;;
+  f)
+    [[ "${EXTENDING}" != "Core" ]] && [[ -n "${EXTENDING}" ]] && [[ -n "${TEMPLATE}" ]] && [[ -n "${EXTENSION_NAME}" ]] && [[ -n "${USER_DEFINED_COMPONENT_NAME}" ]] && [[ $USER_SUBTYPE_SET_WITH_FLAG -eq 1 ]] && FORCE_MAKE=1 || USER_ERROR=1
+    [[ $USER_ERROR -eq 1 ]] && printf "\n%sWarning:%s You must set all flags (-x -e -t -c -s) to use the -f flag, the -f flag MUST be the LAST flag, and you cannot use the -f flag to extend Core!\n\n%s" "${CLEARCOLOR}${ATTENTIONEFFECTCOLOR}${ATTENTIONEFFECT}" "${CLEARCOLOR}${WARNINGCOLOR}" "${CLEARCOLOR}" && exit
+    ;;
+  *)
+    printf "\n%s%s%sWARNING:%s%s You must porvide a value for any flags you set, and you can't set invalid flags.\nThe following flags are possible:\n    -x <arg> (Set <arg> to \"Core\" if extending \"core\", set to \"Extension\" if extending an Extension)%s\n\n" "${CLEARCOLOR}" "${ATTENTIONEFFECTCOLOR}" "${ATTENTIONEFFECT}" "${CLEARCOLOR}" "${WARNINGCOLOR}" "${CLEARCOLOR}"
+    exit
+    ;;
+  esac
 done
 
 [[ $FORCE_MAKE -ne 1 ]] && showWelcomeMessage
