@@ -2,13 +2,9 @@
 
 set -o posix
 source ./functions.sh
-testFunc
-# OPTIONS=("Foo" "Bar" "Baz");
-# RESPONSES=('Bar-Bazzer-Foo' 'Foo-Bazzer-Bar' 'Bazzer-Bar-Foo');
-# askUserForSelection $OPTIONS $RESPONSES;
+# use the testFunc function to test functions.sh was loaded: testFunc
 
 [[ $FORCE_MAKE -ne 1 ]] && clear
-
 initColors
 while getopts "hx:t:e:c:s:f" OPTION; do
   case "${OPTION}" in
